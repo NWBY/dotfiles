@@ -7,6 +7,7 @@ Plug 'ms-jpq/coq_nvim', { 'branch': 'coq' }
 Plug 'ms-jpq/coq.artifacts', { 'branch': 'artifacts' }
 Plug 'ms-jpq/coq.thirdparty', { 'branch': '3p' }
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'neovim/nvim-lspconfig'
 call plug#end()
 
 set exrc
@@ -31,6 +32,8 @@ colorscheme tokyonight
 
 nnoremap <silent> <leader>tg :Telescope git_files<CR>
 
+au BufEnter :COQnow --shut-up<CR>
+
 lua << EOF
 require('telescope').setup {
     extensions = {
@@ -45,6 +48,7 @@ require('telescope').setup {
 
 require('telescope').load_extension('fzf')
 
+require('lspconfig').pyright.setup{}
 -- require('nvim-treesitter.configs').setup {
 --    ensure_installed = 'maintained',
 --    highlight = {
