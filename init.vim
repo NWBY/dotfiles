@@ -55,7 +55,7 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('file_browser')
 
-local servers = { 'pyright' }
+local servers = { 'pyright', 'intelephense' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
