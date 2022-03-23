@@ -6,8 +6,8 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'ms-jpq/coq_nvim', { 'branch': 'coq' }
 Plug 'ms-jpq/coq.artifacts', { 'branch': 'artifacts' }
 Plug 'ms-jpq/coq.thirdparty', { 'branch': '3p' }
-Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 call plug#end()
 
@@ -35,8 +35,6 @@ colorscheme tokyonight
 nnoremap <silent> <leader>tg :Telescope git_files<CR>
 nnoremap <silent> <leader>tf :Telescope file_browser<CR>
 
-au BufEnter :COQnow --shut-up<CR>
-
 lua << EOF
 require('telescope').setup {
     extensions = {
@@ -55,6 +53,7 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('file_browser')
 
+local coq = require "coq"
 local servers = { 'pyright', 'intelephense' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
@@ -62,9 +61,11 @@ for _, lsp in pairs(servers) do
     flags = {
       -- This will be the default in neovim 0.7+
       debounce_text_changes = 150,
-    }
+    },
+    coq.lsp_ensure_capabilities {}
   }
 end
+vim.cmd('COQnow -s')
 -- require('lspconfig').pyright.setup{}
 -- require('nvim-treesitter.configs').setup {
 --    ensure_installed = 'maintained',
