@@ -9,6 +9,8 @@ Plug 'ms-jpq/coq.thirdparty', { 'branch': '3p' }
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 call plug#end()
 
 set exrc
@@ -66,6 +68,15 @@ for _, lsp in pairs(servers) do
   }
 end
 vim.cmd('COQnow -s')
+
+require('lualine').setup {
+    options = {
+        theme = 'tokyonight',
+        icons_enabled = true
+    }
+}
+
+require('nvim-web-devicons').setup{}
 -- require('lspconfig').pyright.setup{}
 -- require('nvim-treesitter.configs').setup {
 --    ensure_installed = 'maintained',
