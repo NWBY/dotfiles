@@ -13,6 +13,7 @@ Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 call plug#end()
 
+set guifont=FiraCode\ Nerd\ Font:h19
 set exrc
 set guicursor=
 set shiftwidth=4
