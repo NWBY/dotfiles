@@ -27,6 +27,7 @@ set nohlsearch
 set noswapfile
 set scrolloff=8
 set hidden
+set smartindent
 
 set signcolumn=yes
 
@@ -37,6 +38,8 @@ colorscheme tokyonight
 
 nnoremap <silent> <leader>tg :Telescope git_files<CR>
 nnoremap <silent> <leader>tf :Telescope file_browser<CR>
+nnoremap <silent> <leader>tb :Telescope buffers<CR>
+nnoremap <silent> <leader>tr :Telescope live_grep<CR>
 
 lua << EOF
 require('telescope').setup {
