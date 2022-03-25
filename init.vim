@@ -41,6 +41,8 @@ nnoremap <silent> <leader>tf :Telescope file_browser<CR>
 nnoremap <silent> <leader>tb :Telescope buffers<CR>
 nnoremap <silent> <leader>tr :Telescope live_grep<CR>
 
+nnoremap p p=`]
+
 lua << EOF
 require('telescope').setup {
     extensions = {
