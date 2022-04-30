@@ -11,6 +11,7 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'sidebar-nvim/sidebar.nvim'
 call plug#end()
 
 set guifont=FiraCode\ Nerd\ Font:h19
@@ -42,6 +43,9 @@ nnoremap <silent> <leader>tb :Telescope buffers<CR>
 nnoremap <silent> <leader>tr :Telescope live_grep<CR>
 
 nnoremap p p=`]
+
+nnoremap <silent> <leader>st :SidebarNvimToggle<CR>
+nnoremap <silent> <leader>sf :SidebarNvimFocus<CR>
 
 lua << EOF
 require('telescope').setup {
@@ -81,6 +85,11 @@ require('lualine').setup {
         icons_enabled = true
     }
 }
+require("sidebar-nvim").setup({
+    open = true,
+    initial_width = 25,
+    sections = { 'files', 'diagnostics', 'git', 'buffers' }
+})
 
 require('nvim-web-devicons').setup{}
 require('nvim-web-devicons').get_icons()
