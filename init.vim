@@ -86,7 +86,7 @@ require('lualine').setup {
     }
 }
 require("sidebar-nvim").setup({
-    open = true,
+    open = false,
     initial_width = 25,
     sections = { 'files', 'diagnostics', 'git', 'buffers' }
 })
