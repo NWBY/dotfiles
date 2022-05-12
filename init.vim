@@ -11,7 +11,6 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'sidebar-nvim/sidebar.nvim'
 call plug#end()
 
 set guifont=FiraCode\ Nerd\ Font:h19
@@ -44,9 +43,6 @@ nnoremap <silent> <leader>tr :Telescope live_grep<CR>
 
 nnoremap p p=`]
 
-nnoremap <silent> <leader>st :SidebarNvimToggle<CR>
-nnoremap <silent> <leader>sf :SidebarNvimFocus<CR>
-
 lua << EOF
 require('telescope').setup {
     extensions = {
@@ -65,19 +61,37 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('file_browser')
 
-local coq = require "coq"
+--local coq = require "coq"
+local on_attach = function(client, bufnr)
+    local opts = { noremap=true, silent=true }
+
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>F', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
+end
+
 local servers = { 'pyright', 'intelephense' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
     flags = {
-      -- This will be the default in neovim 0.7+
       debounce_text_changes = 150,
     },
-    coq.lsp_ensure_capabilities {}
+--    coq.lsp_ensure_capabilities {}
   }
 end
-vim.cmd('COQnow -s')
+--vim.cmd('COQnow -s')
 
 require('lualine').setup {
     options = {
@@ -85,15 +99,9 @@ require('lualine').setup {
         icons_enabled = true
     }
 }
-require("sidebar-nvim").setup({
-    open = false,
-    initial_width = 25,
-    sections = { 'files', 'diagnostics', 'git', 'buffers' }
-})
 
 require('nvim-web-devicons').setup{}
 require('nvim-web-devicons').get_icons()
--- require('lspconfig').pyright.setup{}
 -- require('nvim-treesitter.configs').setup {
 --    ensure_installed = 'maintained',
 --    highlight = {
