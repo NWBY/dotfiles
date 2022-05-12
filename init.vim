@@ -61,7 +61,8 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('file_browser')
 
---local coq = require "coq"
+
+local coq = require "coq"
 local on_attach = function(client, bufnr)
     local opts = { noremap=true, silent=true }
 
@@ -88,10 +89,10 @@ for _, lsp in pairs(servers) do
     flags = {
       debounce_text_changes = 150,
     },
---    coq.lsp_ensure_capabilities {}
+    coq.lsp_ensure_capabilities {}
   }
 end
---vim.cmd('COQnow -s')
+vim.cmd('COQnow -s')
 
 require('lualine').setup {
     options = {
