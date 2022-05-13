@@ -11,6 +11,7 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
 
 set guifont=FiraCode\ Nerd\ Font:h19
@@ -40,6 +41,8 @@ nnoremap <silent> <leader>tg :Telescope git_files<CR>
 nnoremap <silent> <leader>tf :Telescope file_browser<CR>
 nnoremap <silent> <leader>tb :Telescope buffers<CR>
 nnoremap <silent> <leader>tr :Telescope live_grep<CR>
+
+nnoremap <silent> <leader>tt :NvimTreeToggle<CR>
 
 nnoremap p p=`]
 
@@ -82,7 +85,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>F', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
 end
 
-local servers = { 'pyright', 'intelephense' }
+local servers = { 'pyright', 'intelephense', 'tsserver', 'tailwindcss', 'volar' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
@@ -103,6 +106,7 @@ require('lualine').setup {
 
 require('nvim-web-devicons').setup{}
 require('nvim-web-devicons').get_icons()
+require('nvim-tree').setup{}
 -- require('nvim-treesitter.configs').setup {
 --    ensure_installed = 'maintained',
 --    highlight = {
