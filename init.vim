@@ -107,10 +107,10 @@ require('lualine').setup {
 require('nvim-web-devicons').setup{}
 require('nvim-web-devicons').get_icons()
 require('nvim-tree').setup{}
--- require('nvim-treesitter.configs').setup {
---    ensure_installed = 'maintained',
---    highlight = {
---        enable = true,
---    }
--- }
+require('nvim-treesitter.configs').setup {
+    ensure_installed = 'maintained',
+    highlight = {
+        enable = true,
+    }
+}
 EOF
