@@ -12,6 +12,8 @@ Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
+Plug 'ray-x/lsp_signature.nvim'
+Plug 'jose-elias-alvarez/null-ls.nvim'
 call plug#end()
 
 set guifont=FiraCode\ Nerd\ Font:h19
@@ -43,6 +45,8 @@ nnoremap <silent> <leader>tb :Telescope buffers<CR>
 nnoremap <silent> <leader>tr :Telescope live_grep<CR>
 
 nnoremap <silent> <leader>tt :NvimTreeToggle<CR>
+nnoremap <silent> <leader>ti :NvimTreeFindFile<CR>
+nnoremap <silent> <leader>to :NvimTreeFocus<CR>
 
 nnoremap p p=`]
 
@@ -83,9 +87,11 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>F', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
+
+    require "lsp_signature".on_attach()
 end
 
-local servers = { 'pyright', 'intelephense', 'tsserver', 'tailwindcss', 'volar' }
+local servers = { 'pyright', 'intelephense', 'tsserver', 'tailwindcss' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
@@ -96,6 +102,23 @@ for _, lsp in pairs(servers) do
   }
 end
 vim.cmd('COQnow -s')
+
+-- null-ls stuff start
+require("null-ls").setup({
+    sources = {
+        require("null-ls").builtins.formatting.prettier,
+    },
+})
+
+null_ls_on_attach = function(client)
+    if client.resolved_capabilities.document_formatting then
+        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+    end
+end
+require("lspconfig")["null-ls"].setup({
+    on_attach = null_ls_on_attach
+})
+-- null-ls stuff end
 
 require('lualine').setup {
     options = {
