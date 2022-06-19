@@ -3,9 +3,22 @@ Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'ms-jpq/coq_nvim', { 'branch': 'coq' }
-Plug 'ms-jpq/coq.artifacts', { 'branch': 'artifacts' }
-Plug 'ms-jpq/coq.thirdparty', { 'branch': '3p' }
+
+" cmp and vsnip end
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+" cmp and vsnip end
+
+" Plug 'ms-jpq/coq_nvim', { 'branch': 'coq' }
+" Plug 'ms-jpq/coq.artifacts', { 'branch': 'artifacts' }
+" Plug 'ms-jpq/coq.thirdparty', { 'branch': '3p' }
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-file-browser.nvim'
@@ -68,7 +81,6 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('file_browser')
 
-local coq = require "coq"
 local on_attach = function(client, bufnr)
     local opts = { noremap=true, silent=true }
 
@@ -90,17 +102,35 @@ local on_attach = function(client, bufnr)
     require "lsp_signature".on_attach()
 end
 
-local servers = { 'pyright', 'intelephense', 'tsserver', 'tailwindcss' }
+-- cmp start
+local cmp = require'cmp'
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        end,
+    },
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'vsnip' }, -- For vsnip users.
+    }, {
+        { name = 'buffer' },
+    })
+})
+
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+local servers = { 'pyright', 'intelephense', 'tsserver', 'tailwindcss', 'gopls' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
     },
-    coq.lsp_ensure_capabilities {}
+    capabilities = capabilities
   }
 end
-vim.cmd('COQnow -s')
+-- vim.cmd('COQnow -s')
 
 -- null-ls stuff start
 require("null-ls").setup({
