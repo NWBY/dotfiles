@@ -163,6 +163,16 @@ for _, lsp in pairs(servers) do
     capabilities = capabilities
   }
 end
+
+require('lspconfig')['volar'].setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    init_options = {
+        typescript = {
+            serverPath = '/usr/local/lib/node_modules/typescript/lib/tsserverlibrary.js'
+        }
+    }
+}
 -- vim.cmd('COQnow -s')
 
 -- null-ls stuff start
