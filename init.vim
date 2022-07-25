@@ -196,6 +196,14 @@ require('lualine').setup {
     options = {
         theme = 'tokyonight',
         icons_enabled = true
+    },
+    sections = {
+        lualine_c = {
+            {
+                'filename',
+                path = 1
+            }
+        }
     }
 }
 
