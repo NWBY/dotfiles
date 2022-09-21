@@ -96,7 +96,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>F', '<cmd>lua vim.lsp.buf.formatting_sync()<CR>', opts)
 
     require "lsp_signature".on_attach()
@@ -176,21 +176,20 @@ require('lspconfig')['volar'].setup {
 -- vim.cmd('COQnow -s')
 
 -- null-ls stuff start
+null_ls_on_attach = function(client)
+    if client.server_capabilities.document_formatting then
+        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.format()")
+    end
+end
+
 require("null-ls").setup({
+    on_attach = null_ls_on_attach,
     sources = {
         require("null-ls").builtins.formatting.prettier,
         require("null-ls").builtins.formatting.black
     },
 })
 
-null_ls_on_attach = function(client)
-    if client.resolved_capabilities.document_formatting then
-        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
-    end
-end
-require("lspconfig")["null-ls"].setup({
-    on_attach = null_ls_on_attach
-})
 -- null-ls stuff end
 
 require('lualine').setup {
