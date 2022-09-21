@@ -3,10 +3,12 @@
 # Set execute permissions for brew.sh and npm.sh
 chmod +x brew.sh
 chmod +x npm.sh
+chmod +x languages.sh
 
 # Run brew.sh and npm.sh
-bash brew.sh
-bash npm.sh
+sh brew.sh
+sh npm.sh
+sh languages.sh
 
 # Install vim plug
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
