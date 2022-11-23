@@ -1,16 +1,31 @@
 call plug#begin()
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+Plug 'nvim-telescope/telescope.nvim'
 
+" cmp and vsnip end
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
+
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
+" cmp and vsnip end
 
+" Plug 'ms-jpq/coq_nvim', { 'branch': 'coq' }
+" Plug 'ms-jpq/coq.artifacts', { 'branch': 'artifacts' }
+" Plug 'ms-jpq/coq.thirdparty', { 'branch': '3p' }
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'ray-x/lsp_signature.nvim'
 Plug 'jose-elias-alvarez/null-ls.nvim'
 call plug#end()
 
@@ -33,6 +48,14 @@ set smartindent
 set signcolumn=yes
 
 let mapleader=","
+let g:tokyonight_style = "night"
+
+colorscheme tokyonight
+
+nnoremap <silent> <leader>tg :Telescope git_files<CR>
+nnoremap <silent> <leader>tf :Telescope file_browser<CR>
+nnoremap <silent> <leader>tb :Telescope buffers<CR>
+nnoremap <silent> <leader>tr :Telescope live_grep<CR>
 
 nnoremap <silent> <leader>tt :NvimTreeToggle<CR>
 nnoremap <silent> <leader>ti :NvimTreeFindFile<CR>
@@ -41,6 +64,23 @@ nnoremap <silent> <leader>to :NvimTreeFocus<CR>
 nnoremap p p=`]
 
 lua << EOF
+require('telescope').setup {
+    extensions = {
+        fzf = {
+            fuzzy = true,
+            override_generic_sorter = true,
+            override_file_sorter = true,
+            case_mode = "smart_case"
+        },
+        file_browser = {
+            hidden = true
+        }
+    }
+}
+
+require('telescope').load_extension('fzf')
+require('telescope').load_extension('file_browser')
+
 local on_attach = function(client, bufnr)
     local opts = { noremap=true, silent=true }
 
@@ -113,7 +153,7 @@ cmp.setup({
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-local servers = { 'pyright', 'tsserver', 'tailwindcss', 'gopls', 'html' }
+local servers = { 'pyright', 'intelephense', 'tsserver', 'tailwindcss', 'gopls', 'html' }
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
@@ -133,6 +173,7 @@ require('lspconfig')['volar'].setup {
         }
     }
 }
+-- vim.cmd('COQnow -s')
 
 -- null-ls stuff start
 null_ls_on_attach = function(client)
@@ -151,9 +192,26 @@ require("null-ls").setup({
 
 -- null-ls stuff end
 
+require('lualine').setup {
+    options = {
+        theme = 'tokyonight',
+        icons_enabled = true
+    },
+    sections = {
+        lualine_c = {
+            {
+                'filename',
+                path = 1
+            }
+        }
+    }
+}
+
+require('nvim-web-devicons').setup{}
+require('nvim-web-devicons').get_icons()
+require('nvim-tree').setup{}
 require('nvim-treesitter.configs').setup {
     ensure_installed = 'all',
-    ignore_install = { "phpdoc", "tree-sitter-phpdoc" }, -- List of parsers to ignore installing
     highlight = {
         enable = true,
     }
